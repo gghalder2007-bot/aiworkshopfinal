@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SciWrite AI — Premium Workspace</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.12);
+            --glass-input: rgba(15, 23, 42, 0.6);
+            
+            --primary-glow: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            --apple-blue: #2997ff;
+            --apple-blue-hover: #147ce5;
+            
+            --text-main: #f5f5f7;
+            --text-muted: #86868b;
+            --text-error: #ff453a;
+            --text-success: #30d158;
+            
+            --easing-spring: cubic-bezier(0.25, 1, 0.5, 1);
+            --blur-radius: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Hardware Accelerated Smooth Transition Framework */
+        .page-view, .tab-content-item, .card, .nav-btn, .btn {
+            will-change: transform, opacity;
+            transition: all 0.4s var(--easing-spring);
+        }
+
+        /* Sidebar Glass Implementation */
+        .sidebar {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(var(--blur-radius));
+            -webkit-backdrop-filter: blur(var(--blur-radius));
+            border-right: 1px solid var(--glass-border);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            z-index: 10;
+        }
+
+        .sidebar-brand h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-brand .caption {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Navigation Links Layout */
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            background: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--glass-border);
+            transform: translateX(4px);
+        }
+
+        .nav-btn.active {
+            background: var(--glass-highlight);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+
+        /* Main Context Stage Wrapper */
+        .workspace {
+            flex: 1;
+            padding: 48px 64px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .workspace::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--primary-glow);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .workspace-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Apple Liquid Glass Container Architecture */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur-radius));
+            -webkit-backdrop-filter: blur(var(--blur-radius));
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 28px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Liquid Glass Highlight Reflection Trim */
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Interactive Interface Input Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            font-size: 15px;
+            background: var(--glass-input);
+            color: var(--text-main);
+            backdrop-filter: blur(4px);
+            transition: all 0.3s var(--easing-spring);
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.5;
+        }
+
+        /* Progress Metrics Trackers */
+        .progress-container {
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            height: 6px;
+            overflow: hidden;
+            width: 100%;
+            margin-top: 8px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #2997ff 0%, #6366f1 100%);
+            height: 100%;
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Action Buttons Architecture */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--apple-blue);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(41, 151, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--apple-blue-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(41, 151, 255, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--glass-border);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* Segmented Navigation Tab Components */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 24px;
+            width: fit-content;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s var(--easing-spring);
+        }
+
+        .tab.active {
+            background: var(--glass-highlight);
+            color: var(--text-main);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Dynamic Functional Module Views */
+        .page-view {
+            display: none;
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        .page-view.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tab-content-item {
+            animation: fadeIn 0.4s var(--easing-spring) forwards;
+        }
+
+        /* Explicit Layout Grid Architectures */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 28px;
+        }
+
+        .grid-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Empty Area States UI Design */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            border: 2px dashed var(--glass-border);
+            border-radius: 16px;
+            font-size: 14px;
+        }
+
+        /* Data Visualization Table Layouts */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 12px;
+        }
+
+        th {
+            background: rgba(0,0,0,0.15);
+            padding: 14px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            text-align: left;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        td {
+            padding: 16px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.85);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Code Preview Terminal Shells */
+        pre {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            font-family: "SF Mono", Monaco, Consolas, monospace;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #e4e4e7;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Workspace Checklist Design Components */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .checklist-icon {
+            font-size: 16px;
+            display: inline-block;
+            width: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h1>SciWrite AI</h1>
+            <div class="caption">Guided Research Workspace</div>
+        </div>
+        
+        <div class="progress-container">
+            <div id="sidebar-progress-text" style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8);">Project Completion: 0%</div>
+            <div class="progress-bar"><div id="sidebar-progress" class="progress-fill"></div></div>
+        </div>
+        
+        <div class="nav-list">
+            <button class="nav-btn active" onclick="showPage('Project Setup')"><span>📁</span> Project Setup</button>
+            <button class="nav-btn" onclick="showPage('References')"><span>📚</span> References</button>
+            <button class="nav-btn" onclick="showPage('Research Planning')"><span>💡</span> Research Planning</button>
+            <button class="nav-btn" onclick="showPage('Outline Builder')"><span>📋</span> Outline Builder</button>
+            <button class="nav-btn" onclick="showPage('Writing Assistant')"><span>✍️</span> Writing Assistant</button>
+            <button class="nav-btn" onclick="showPage('Figures & Tables')"><span>📊</span> Figures & Tables</button>
+            <button class="nav-btn" onclick="showPage('Citations')"><span>🏷️</span> Citations</button>
+            <button class="nav-btn" onclick="showPage('Export')"><span>🚀</span> Export Project</button>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <div class="workspace-content">
+            
+            <div id="page-Project-Setup" class="page-view active">
+                <h2>Project Setup</h2>
+                <div class="caption">Define core metadata details to parameterize your target workspace blueprint template.</div><br>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Paper Details</h3>
+                        <div class="form-group">
+                            <label>Research Title</label>
+                            <input type="text" id="setup-title" placeholder="Enter full research layout topic..." onchange="saveSetup()">
+                        </div>
+                        <div class="form-group">
+                            <label>Author Names (One per line)</label>
+                            <textarea id="setup-authors" placeholder="Dr. Jane Doe&#10;Prof. John Smith" onchange="saveSetup()"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Author Affiliations (One per line)</label>
+                            <textarea id="setup-affiliations" placeholder="Department of Computer Science, University X" onchange="saveSetup()"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Target Journal or Venue</label>
+                            <input type="text" id="setup-journal" placeholder="e.g. IEEE Transactions on AI" onchange="saveSetup()">
+                        </div>
+                        
+                        <h3 style="margin-top: 40px;">Paper Type & Style</h3>
+                        <div class="grid-split">
+                            <div class="form-group">
+                                <label>Research Type</label>
+                                <select id="setup-type" onchange="saveSetup()">
+                                    <option>Literature Review</option>
+                                    <option>Survey Paper</option>
+                                    <option>Experimental Research</option>
+                                    <option>Case Study</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Citation Style</label>
+                                <select id="setup-style" onchange="saveSetup()">
+                                    <option>APA</option>
+                                    <option>MLA</option>
+                                    <option>IEEE</option>
+                                    <option>Chicago</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="card">
+                            <h3>Project Health Matrix</h3>
+                            <div id="health-metric" style="font-size: 36px; font-weight: 700; color: var(--apple-blue); letter-spacing: -1px;">0%</div>
+                            <div id="checklist-box" style="margin-top: 20px; font-size: 14px; line-height: 1.8;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-References" class="page-view">
+                <h2>References Management Engine</h2>
+                <div class="caption">Ingest or specify verified citations into backend dictionary storage states safely.</div><br>
+                <div class="tabs">
+                    <button class="tab active" onclick="switchRefTab(event, 'ref-upload')">Upload Source Artifacts</button>
+                    <button class="tab" onclick="switchRefTab(event, 'ref-manual')">Manual DOI / Context Input</button>
+                    <button class="tab" onclick="switchRefTab(event, 'ref-all')">All Project Sources</button>
+                </div>
+                
+                <div id="ref-upload" class="tab-content-item">
+                    <div class="grid-split">
+                        <div class="card">
+                            <h3>PDF Document Ingestion</h3>
+                            <div class="caption">Extract metadata with isolated LLM verification sweeps safely.</div>
+                            <div class="form-group">
+                                <input type="file" id="pdf-uploader" multiple accept=".pdf" style="display: none;" onchange="updateFileLabel('pdf')">
+                                <button class="btn btn-secondary" style="width: 100%; padding: 20px;" onclick="document.getElementById('pdf-uploader').click()">Choose PDF Files</button>
+                                <div id="pdf-file-label" class="caption" style="margin-top: 8px; text-align: center;">No files selected</div>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;" onclick="uploadFiles('pdf')">Execute Extraction Sync</button>
+                        </div>
+                        <div class="card">
+                            <h3>DOCX Document Ingestion</h3>
+                            <div class="caption">Ingest manuscript records from text fields.</div>
+                            <div class="form-group">
+                                <input type="file" id="docx-uploader" multiple accept=".docx" style="display: none;" onchange="updateFileLabel('docx')">
+                                <button class="btn btn-secondary" style="width: 100%; padding: 20px;" onclick="document.getElementById('docx-uploader').click()">Choose DOCX Files</button>
+                                <div id="docx-file-label" class="caption" style="margin-top: 8px; text-align: center;">No files selected</div>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;" onclick="uploadFiles('docx')">Execute Extraction Sync</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ref-manual" class="tab-content-item" style="display:none;">
+                    <div class="card">
+                        <h3>New Reference Specification</h3><br>
+                        <div class="grid-split">
+                            <div class="form-group"><label>Digital Object Identifier (DOI)</label><input type="text" id="man-doi" placeholder="10.1000/xyz123"></div>
+                            <div class="form-group"><label>Document Title</label><input type="text" id="man-title" placeholder="Analysis of structural nodes..."></div>
+                            <div class="form-group"><label>Authors (Comma separated)</label><input type="text" id="man-authors" placeholder="A. Smith, B. Jones"></div>
+                            <div class="form-group"><label>Source Target URI</label><input type="text" id="man-url" placeholder="https://example.org/article"></div>
+                            <div class="form-group"><label>Publication Year</label><input type="text" id="man-year" placeholder="2026"></div>
+                            <div class="form-group"><label>Journal / Volume Arena</label><input type="text" id="man-journal" placeholder="Journal of Advanced Paradigms"></div>
+                        </div>
+                        <button class="btn btn-primary" onclick="addManualRef()">Insert Target Citation</button>
+                    </div>
+                </div>
+
+                <div id="ref-all" class="tab-content-item" style="display:none;">
+                    <div class="card">
+                        <h3>Bibliographic Registry</h3>
+                        <div id="references-list-wrapper" class="empty-state">No context structures parsed or registered yet.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-Research-Planning" class="page-view">
+                <h2>Research Strategy Architecture</h2>
+                <div class="caption">Synthesize logical research boundaries through interactive discovery workflows.</div><br>
+                <div class="card">
+                    <h3>Topic Structuring Sweep</h3>
+                    <div class="grid-split">
+                        <div class="form-group"><label>Primary Domain Domain</label><input type="text" id="plan-area" placeholder="e.g. Distributed Infrastructure"></div>
+                        <div class="form-group"><label>Granular Structural Intersection</label><input type="text" id="plan-interest" placeholder="e.g. Edge cache state invalidation tracks"></div>
+                    </div>
+                    <button class="btn btn-primary" onclick="refineTopic()">Generate Alignment Plan</button>
+                    <div id="refined-output-box"></div>
+                </div>
+                
+                <div class="card">
+                    <h3>Core Metrics & Targeted Trajectories</h3><br>
+                    <button class="btn btn-secondary" style="margin-bottom: 20px;" onclick="generateQuestions()">Auto-Scribe Discovery Targets via AI</button>
+                    <div class="form-group">
+                        <label>Target Inquiry Statements (One per line)</label>
+                        <textarea id="plan-questions" placeholder="What performance bounds manifest under variable cluster weights?" onchange="saveQuestions()"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Strategic Objective Nodes (One per line)</label>
+                        <textarea id="plan-objectives" placeholder="Measure validation metrics cross execution zones." onchange="saveQuestions()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-Outline-Builder" class="page-view">
+                <h2>Outline Structural Engineer</h2>
+                <div class="caption">Configure layout structural branches before executing text drafting phases.</div><br>
+                <div class="card">
+                    <h3>Compile Component Schema Maps</h3>
+                    <div class="caption">Creates an optimal outline layout derived from your explicit strategic criteria.</div><br>
+                    <button class="btn btn-primary" onclick="generateOutline()">Initialize Component Schema Maps</button>
+                </div>
+                <div id="outline-accordion-container"></div>
+            </div>
+
+            <div id="page-Writing-Assistant" class="page-view">
+                <h2>Interactive Structural Writing Suite</h2>
+                <div class="caption">Leverage contextual advice guidelines to author research manuscript blocks smoothly.</div><br>
+                <div class="tabs" id="writing-section-tabs"></div>
+                <div id="writing-tab-content">
+                    <div class="card empty-state">Select a section view partition above to initialize development guidance layers.</div>
+                </div>
+            </div>
+
+            <div id="page-Figures-&-Tables" class="page-view">
+                <h2>Figures & Visual Assets Storage</h2>
+                <div class="caption">Register observation figures into target document zones.</div><br>
+                <div class="card">
+                    <h3>Upload Visualization Element</h3>
+                    <div class="form-group">
+                        <label>Source Image Asset</label>
+                        <input type="file" id="fig-image-file" accept="image/*" style="display: none;" onchange="document.getElementById('fig-file-info').innerText = this.files[0].name">
+                        <button class="btn btn-secondary" style="width: 100%; padding: 16px;" onclick="document.getElementById('fig-image-file').click()">Select Asset Frame</button>
+                        <div id="fig-file-info" class="caption" style="margin-top: 6px; text-align: center;">No graphic asset referenced</div>
+                    </div>
+                    <div class="grid-split">
+                        <div class="form-group"><label>Caption String Text</label><input type="text" id="fig-caption-input" placeholder="Graph plotting latency distributions across..."></div>
+                        <div class="form-group"><label>Origin Source Attribution</label><input type="text" id="fig-source-input" placeholder="Primary empirical runtime metrics metrics"></div>
+                    </div>
+                    <button class="btn btn-primary" onclick="uploadFigure()">Mount Asset Element</button>
+                </div>
+                <div id="figures-display-container"></div>
+            </div>
+
+            <div id="page-Citations" class="page-view">
+                <h2>Compiled Reference Assertions Preview</h2>
+                <div class="caption">Review generated citations across chosen style formats.</div><br>
+                <div id="citations-display-box"></div>
+            </div>
+
+            <div id="page-Export" class="page-view">
+                <h2>Compilation & Package Distribution</h2>
+                <div class="caption">Export work states out to complete production standard archive bundles smoothly.</div><br>
+                <div class="card">
+                    <h3>Document Layout Template Config</h3>
+                    <div class="form-group" style="max-width: 400px;">
+                        <label>Choose Macro Layout Matrix Template</label>
+                        <select id="export-template" onchange="updateExportPreview()">
+                            <option>IEEE</option>
+                            <option>ACM</option>
+                            <option>Springer</option>
+                            <option>Elsevier</option>
+                            <option>Custom</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="window.location.href='/api/download_zip'">Download Complete ZIP Bundle Package</button>
+                </div>
+                <div class="grid-split">
+                    <div>
+                        <h3 style="margin-left: 8px; margin-bottom: 8px;">paper.tex Output Structure</h3>
+                        <pre id="preview-tex">Preamble parsing idle...</pre>
+                    </div>
+                    <div>
+                        <h3 style="margin-left: 8px; margin-bottom: 8px;">references.bib Output Structure</h3>
+                        <pre id="preview-bib">Bibliography compilation idle...</pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentSectionView = "Abstract";
+        const sectionList = ["Abstract", "Introduction", "Literature Review", "Methodology", "Results", "Discussion", "Conclusion"];
+
+        function showPage(pageId) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            
+            event.currentTarget.classList.add('active');
+            const targetPage = document.getElementById(`page-${pageId.replace(/ /g, '-')}`);
+            if(targetPage) targetPage.classList.add('active');
+
+            if(pageId === 'References') loadReferencesList();
+            if(pageId === 'Writing Assistant') renderWritingTabs();
+            if(pageId === 'Figures & Tables') loadFiguresList();
+            if(pageId === 'Citations') loadCitations();
+            if(pageId === 'Export') updateExportPreview();
+            syncProjectHealth();
+        }
+
+        async function syncProjectHealth() {
+            const res = await fetch('/api/state');
+            const state = await res.json();
+            
+            document.getElementById('sidebar-progress-text').innerText = `Project Completion: ${state.completeness}%`;
+            document.getElementById('sidebar-progress').style.width = `${state.completeness}%`;
+            
+            const metric = document.getElementById('health-metric');
+            if(metric) metric.innerText = `${state.completeness}%`;
+
+            const checklistBox = document.getElementById('checklist-box');
+            if(checklistBox) {
+                const list = [
+                    ["Title defined configuration", !!state.title],
+                    ["Authors explicitly configured", state.authors.length > 0],
+                    ["Journal target assigned", !!state.journal],
+                    ["Research question matrix defined", state.research_questions.length > 0],
+                    ["Target objectives established", state.objectives.length > 0],
+                    ["Outline nodes configured", Object.keys(state.outline).length > 0],
+                    ["References collection mounted", state.references.length > 0]
+                ];
+                checklistBox.innerHTML = list.map(item => `
+                    <div class="checklist-item">
+                        <span class="checklist-icon">${item[1] ? "🟢" : "⚪"}</span>
+                        <span>${item[0]}</span>
+                    </div>
+                `).join("");
+            }
+            return state;
+        }
+
+        async function saveSetup() {
+            await fetch('/api/update_setup', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    title: document.getElementById('setup-title').value,
+                    authors: document.getElementById('setup-authors').value,
+                    affiliations: document.getElementById('setup-affiliations').value,
+                    journal: document.getElementById('setup-journal').value,
+                    paper_type: document.getElementById('setup-type').value,
+                    citation_style: document.getElementById('setup-style').value
+                })
+            });
+            syncProjectHealth();
+        }
+
+        function updateFileLabel(type) {
+            const input = document.getElementById(`${type}-uploader`);
+            document.getElementById(`${type}-file-label`).innerText = `${input.files.length} files selected`;
+        }
+
+        function switchRefTab(e, tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content-item').forEach(c => c.style.display = 'none');
+            e.target.classList.add('active');
+            document.getElementById(tabId).style.display = 'block';
+            if(tabId === 'ref-all') loadReferencesList();
+        }
+
+        async function uploadFiles(type) {
+            const input = document.getElementById(`${type}-uploader`);
+            if(!input.files.length) return alert("Please select files first.");
+            
+            const formData = new FormData();
+            formData.append('type', type);
+            for(let i=0; i<input.files.length; i++) {
+                formData.append('files', input.files[i]);
+            }
+            await fetch('/api/upload_references', { method: 'POST', body: formData });
+            alert("Parsing sync finalized.");
+            loadReferencesList();
+        }
+
+        async function addManualRef() {
+            const payload = {
+                doi: document.getElementById('man-doi').value,
+                title: document.getElementById('man-title').value,
+                authors: document.getElementById('man-authors').value,
+                url: document.getElementById('man-url').value,
+                year: document.getElementById('man-year').value,
+                journal: document.getElementById('man-journal').value
+            };
+            await fetch('/api/add_manual_reference', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            alert("Manual citation locked.");
+            syncProjectHealth();
+        }
+
+        async function loadReferencesList() {
+            const res = await fetch('/api/state');
+            const state = await res.json();
+            const wrapper = document.getElementById('references-list-wrapper');
+            if(!state.references.length) {
+                wrapper.innerHTML = `<div class="empty-state">No context structures parsed or registered yet.</div>`;
+                return;
+            }
+            let html = `<table>
+                <thead><tr><th>Document Title</th><th>Authors</th><th>Year</th><th style="width:100px;">Actions</th></tr></thead><tbody>`;
+            state.references.forEach((r, idx) => {
+                html += `<tr>
+                    <td><strong>${r.title}</strong><br><span style="font-size:12px; color:var(--text-muted);">Source: ${r.source_file}</span></td>
+                    <td>${r.authors}</td>
+                    <td><span style="background:rgba(255,255,255,0.06); padding:4px 8px; border-radius:6px; font-size:13px;">${r.year}</span></td>
+                    <td><button class="btn btn-secondary" style="padding:6px 12px; font-size:12px;" onclick="deleteRef(${idx})">Purge</button></td>
+                </tr>`;
+            });
+            html += `</tbody></table>`;
+            wrapper.innerHTML = html;
+        }
+
+        async function deleteRef(idx) {
+            await fetch('/api/remove_reference', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({index: idx})
+            });
+            loadReferencesList();
+            syncProjectHealth();
+        }
+
+        async function refineTopic() {
+            const payload = {
+                research_area: document.getElementById('plan-area').value,
+                research_interest: document.getElementById('plan-interest').value
+            };
+            const res = await fetch('/api/refine_topic', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            const out = await res.json();
+            if(out.success) {
+                document.getElementById('refined-output-box').innerHTML = `
+                    <div style="background:rgba(255,255,255,0.02); border:1px solid var(--glass-border); padding:24px; border-radius:14px; margin-top:20px;">
+                        <h4 style="color:var(--apple-blue); margin-bottom:12px;">AI Refined Alignment Scope</h4>
+                        <p style="margin-bottom:8px;"><strong>Refined Architecture Topic:</strong> ${out.refined.refined_topic}</p>
+                        <p style="margin-bottom:8px;"><strong>Scope Boundary:</strong> ${out.refined.scope}</p>
+                        <p style="margin-bottom:8px;"><strong>Difficulty Index:</strong> ${out.refined.difficulty}</p>
+                        <p style="margin-bottom:16px;"><strong>Strategic Rationale:</strong> ${out.refined.why_manageable}</p>
+                        <button class="btn btn-primary" style="padding:10px 16px; font-size:13px;" onclick="applyTitle()">Bind Topic Title to Workspace Blueprint</button>
+                    </div>`;
+            }
+        }
+
+        async function applyTitle() {
+            await fetch('/api/apply_title', { method: 'POST' });
+            alert("Title mapped to active tracking state.");
+            syncProjectHealth();
+        }
+
+        async function generateQuestions() {
+            const res = await fetch('/api/generate_questions', { method: 'POST' });
+            const out = await res.json();
+            if(out.success) {
+                document.getElementById('plan-questions').value = out.data.research_questions.join("\n");
+                document.getElementById('plan-objectives').value = out.data.objectives.join("\n");
+                syncProjectHealth();
+            } else {
+                alert(out.error);
+            }
+        }
+
+        async function saveQuestions() {
+            await fetch('/api/save_questions', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    research_questions: document.getElementById('plan-questions').value,
+                    objectives: document.getElementById('plan-objectives').value
+                })
+            });
+            syncProjectHealth();
+        }
+
+        async function generateOutline() {
+            const res = await fetch('/api/generate_outline', { method: 'POST' });
+            const out = await res.json();
+            if(out.success) {
+                renderOutlineStructure(out.outline);
+            } else {
+                alert(out.error);
+            }
+        }
+
+        function renderOutlineStructure(outline) {
+            const container = document.getElementById('outline-accordion-container');
+            container.innerHTML = "";
+            Object.keys(outline).forEach(section => {
+                const points = outline[section].join("\n");
+                container.innerHTML += `
+                    <div class="card" style="margin-top:16px;">
+                        <h3 style="margin-bottom:10px;">📑 ${section}</h3>
+                        <textarea rows="4" onchange="saveOutlineState()">${points}</textarea>
+                    </div>`;
+            });
+        }
+
+        async function saveOutlineState() {
+            syncProjectHealth();
+        }
+
+        function renderWritingTabs() {
+            const container = document.getElementById('writing-section-tabs');
+            container.innerHTML = sectionList.map(sec => `
+                <button class="tab ${sec === currentSectionView ? 'active':''}" onclick="switchWritingSection(event, '${sec}')">${sec}</button>
+            `).join("");
+            loadWritingAssistantContent();
+        }
+
+        function switchWritingSection(e, sec) {
+            currentSectionView = sec;
+            renderWritingTabs();
+        }
+
+        async function loadWritingAssistantContent() {
+            const res = await fetch('/api/state');
+            const state = await res.json();
+            const contentBox = document.getElementById('writing-tab-content');
+            
+            const secData = state.sections[currentSectionView] || { guidance: {}, notes: "" };
+            const guidance = secData.guidance;
+            
+            let guidanceHtml = `<button class="btn btn-primary" style="margin-bottom:20px;" onclick="getWritingGuidance()">Synthesize Blueprint Guidelines for ${currentSectionView}</button><br>`;
+            if(guidance.purpose) {
+                guidanceHtml += `
+                    <div style="background:rgba(0,0,0,0.2); border:1px solid var(--glass-border); padding:24px; border-radius:14px; font-size:14px; margin-bottom:24px; line-height:1.6;">
+                        <p style="margin-bottom:10px;"><strong style="color:var(--apple-blue)">Functional Goal Purpose:</strong> ${guidance.purpose}</p>
+                        <p style="margin-bottom:10px;"><strong style="color:var(--apple-blue)">Critical Contents Criteria:</strong> ${guidance.what_to_include}</p>
+                        <p style="margin-bottom:10px;"><strong style="color:var(--apple-blue)">Suggested Delivery Chain Structure:</strong> ${guidance.suggested_structure}</p>
+                        <p style="margin-bottom:0;"><strong style="color:var(--apple-blue)">Example Composition Template Framework:</strong> ${guidance.example_framework}</p>
+                    </div>`;
+            }
+            
+            contentBox.innerHTML = `
+                <div class="card">
+                    ${guidanceHtml}
+                    <label>Manuscript Drafting Notebook Layer</label>
+                    <textarea id="writing-notes-area" style="height:240px; margin-top:8px;" placeholder="Compose your raw structural arguments observations or manuscript elements text block here..." onchange="saveWritingNotes()">${secData.notes || ''}</textarea>
+                </div>
+            `;
+        }
+
+        async function getWritingGuidance() {
+            const res = await fetch('/api/writing_guidance', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ section: currentSectionView })
+            });
+            loadWritingAssistantContent();
+        }
+
+        async function saveWritingNotes() {
+            await fetch('/api/save_notes', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    section: currentSectionView,
+                    notes: document.getElementById('writing-notes-area').value
+                })
+            });
+        }
+
+        async function uploadFigure() {
+            const fileInput = document.getElementById('fig-image-file');
+            if(!fileInput.files.length) return alert("Select an asset image frame first.");
+            
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+            formData.append('caption', document.getElementById('fig-caption-input').value);
+            formData.append('source', document.getElementById('fig-source-input').value);
+            
+            await fetch('/api/add_figure', { method: 'POST', body: formData });
+            loadFiguresList();
+        }
+
+        async function loadFiguresList() {
+            const res = await fetch('/api/state');
+            const state = await res.json();
+            const container = document.getElementById('figures-display-container');
+            container.innerHTML = "";
+            if(!state.figures.length) return;
+            
+            state.figures.forEach(fig => {
+                container.innerHTML += `
+                    <div class="card grid-split" style="align-items: center;">
+                        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; display: flex; justify-content: center;">
+                            <img src="data:image/png;base64,${fig.b64_bytes}" style="max-width:100%; max-height:200px; border-radius:8px; object-fit:contain;">
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom:8px; color:var(--text-main);">${fig.filename}</h4>
+                            <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Caption: ${fig.caption}</p>
+                            <code style="background:rgba(0,0,0,0.3); padding:6px 10px; border-radius:6px; display:inline-block; font-size:12px; margin-bottom:16px; color:var(--apple-blue)">\\label{fig:${fig.label}}</code><br>
+                            <button class="btn btn-secondary" style="padding:6px 12px; font-size:12px;" onclick="removeFig('${fig.id}')">Drop Element</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        async function removeFig(id) {
+            await fetch('/api/remove_figure', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id })
+            });
+            loadFiguresList();
+        }
+
+        async function loadCitations() {
+            const res = await fetch('/api/citations_view');
+            const data = await res.json();
+            const box = document.getElementById('citations-display-box');
+            if(!data.citations.length) {
+                box.innerHTML = `<div class="card empty-state">No source citations mapped into storage yet. Add files in the References panel.</div>`;
+                return;
+            }
+            box.innerHTML = data.citations.map(c => `
+                <div class="card">
+                    <h3 style="font-size:16px; margin-bottom:12px; color:#ffffff;">${c.title}</h3>
+                    <div class="form-group">
+                        <label>In-Text Dynamic Hook Call</label>
+                        <pre style="padding:10px; font-size:12px;">${c.in_text}</pre>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Formatted Bibliographic Bibliography String</label>
+                        <pre style="padding:10px; font-size:12px; white-space:pre-wrap;">${c.ref_list}</pre>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        async function updateExportPreview() {
+            const tmpl = document.getElementById('export-template').value;
+            const res = await fetch('/api/export_preview', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ journal_template: tmpl })
+            });
+            const out = await res.json();
+            document.getElementById('preview-tex').innerText = out.tex || "No section elements tracked yet.";
+            document.getElementById('preview-bib').innerText = out.bib || "No bibliographic descriptors recorded yet.";
+        }
+
+        // Initialize Workspace State Telemetry Sync on Page Mount
+        syncProjectHealth();
+    </script>
+</body>
+</html>
